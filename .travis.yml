@@ -1,0 +1,13 @@
+language: php
+
+php:
+- 7.0
+- 7.1
+- 7.2
+
+before_script:
+- echo 'date.timezone = "UTC"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+- composer install --no-interaction --optimize-autoloader
+
+script:
+- vendor/bin/phpspec run --verbose --no-interaction
