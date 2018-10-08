@@ -114,7 +114,9 @@ class Primo
             $query->build()
         );
 
-        return json_decode($this->request($this->searchUrl, $params));
+        $result = $this->request($this->searchUrl, $params);
+
+        return json_decode($result) ?? $result;
     }
 
     public function request($url, $params)
