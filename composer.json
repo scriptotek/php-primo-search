@@ -1,5 +1,5 @@
 {
-    "name": "scriptotek/primo-search-client",
+    "name": "scriptotek/primo-search",
     "description": "SDK for the Primo Search REST API",
     "type": "library",
     "license": "MIT",
