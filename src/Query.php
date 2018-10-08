@@ -54,17 +54,17 @@ class Query
         }
 
         $params = [];
-        foreach ($this->data as $k => $v) {
-            if (count($v)) {
-                $glue = ($k == 'q') ? ';' : '|,|';
-                if (is_array($v)) {
-                    $values = array_map(function ($part) {
+        foreach ($this->data as $key => $val) {
+            if (is_array($val)) {
+                if (count($val)) {
+                    $glue = ($key == 'q') ? ';' : '|,|';
+                    $val = array_map(function ($part) {
                         return is_object($part) ? $part->build() : implode(',', $part);
-                    }, $v);
-                    $params[$k] = implode($glue, $values);
-                } else {
-                    $params[$k] = (string) $v;
+                    }, $val);
+                    $params[$key] = implode($glue, $val);
                 }
+            } else {
+                $params[$key] = (string) $val;
             }
         }
 
