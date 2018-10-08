@@ -1,3 +1,7 @@
+[![Build Status](https://www.travis-ci.com/scriptotek/php-primo-search-client.svg?branch=master)](https://www.travis-ci.com/scriptotek/php-primo-search-client)
+[![Scrutinizer code quality](https://scrutinizer-ci.com/g/scriptotek/php-primo-search-client/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/scriptotek/php-primo-search-client/?branch=master)
+[![Packagist](https://img.shields.io/packagist/v/scriptotek/primo-search-client.svg)](https://packagist.org/packages/scriptotek/primo-search-client)
+
 # Primo search client
 
 Client package for searching Primo using the Primo REST API.
