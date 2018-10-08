@@ -21,7 +21,8 @@
         "php-http/httplug": "^1.0",
         "php-http/message-factory": "^1.0",
         "php-http/discovery": "^1.0",
-        "php-http/message": "^1.7"
+        "php-http/message": "^1.7",
+        "php-http/client-common": "^1.8"
     },
     "require-dev": {
         "php-http/mock-client": "^1.1",

@@ -2,6 +2,10 @@
 
 namespace Scriptotek\PrimoSearch;
 
+use Http\Client\Common\Plugin\DecoderPlugin;
+use Http\Client\Common\Plugin\ErrorPlugin;
+use Http\Client\Common\Plugin\RetryPlugin;
+use Http\Client\Common\PluginClient;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Message\MessageFactory;
@@ -30,7 +34,12 @@ class Primo
     protected $scope;
     protected $lang = 'en_US';
 
-    public function __construct(array $config, HttpClient $httpClient = null, MessageFactory $messageFactory = null)
+    public function __construct(
+        array $config,
+        HttpClient $httpClient = null,
+        array $plugins = [],
+        MessageFactory $messageFactory = null
+    )
     {
         $this->vid = $config['vid'];
         $this->scope = $config['scope'];
@@ -49,7 +58,11 @@ class Primo
             $this->searchUrl = $config['searchUrl'] ?? "{$this->baseUrl}/pnxs";
         }
 
-        $this->http = $httpClient ?: HttpClientDiscovery::find();
+        $httpClient = $httpClient ?: HttpClientDiscovery::find();
+        $plugins[] = new RetryPlugin();
+        $plugins[] = new ErrorPlugin();
+        $plugins[] = new DecoderPlugin();
+        $this->http = new PluginClient($httpClient, $plugins);
         $this->messageFactory = $messageFactory ?: MessageFactoryDiscovery::find();
     }
     /**
