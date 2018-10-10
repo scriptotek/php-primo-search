@@ -39,8 +39,7 @@ class Primo
         HttpClient $httpClient = null,
         array $plugins = [],
         MessageFactory $messageFactory = null
-    )
-    {
+    ) {
         $this->vid = $config['vid'];
         $this->scope = $config['scope'];
 
@@ -100,14 +99,18 @@ class Primo
 
     /**
      * Make an API request.
-     * @param Query $query
+     * @param Query|array $query
      * @return string
      * @throws \Http\Client\Exception
      */
-    public function search(Query $query)
+    public function search($query)
     {
         if (!isset($this->apiKey) && !isset($this->jwtToken)) {
             $this->getGuestJwtToken();
+        }
+
+        if (is_object($query)) {
+            $query = $query->build();
         }
 
         $params = array_merge(
@@ -124,7 +127,7 @@ class Primo
                 'tab' => 'default_tab',
                 'rtaLinks' => 'true',
             ],
-            $query->build()
+            $query
         );
 
         $result = $this->request($this->searchUrl, $params);

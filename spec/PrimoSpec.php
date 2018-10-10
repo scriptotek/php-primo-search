@@ -72,13 +72,25 @@ class PrimoSpec extends ObjectBehavior
         $this->setVid('UIO')->shouldReturn($this);
     }
 
-    function it_can_make_requests_and_parse_the_response(Query $query)
+    function it_can_make_search_requests_using_query_builder(Query $query)
     {
         $this->initWithResponses([
             new Response(200, [], 'test123'),
         ]);
 
         $query->build()->willReturn(['q' => 'any,contains,abc']);
+        $this->search($query)->shouldReturn('test123');
+    }
+
+    function it_can_make_search_requests_using_query_array()
+    {
+        $query = [
+            'q' => 'any,contains,abc',
+        ];
+        $this->initWithResponses([
+            new Response(200, [], 'test123'),
+        ]);
+
         $this->search($query)->shouldReturn('test123');
     }
 
