@@ -1,6 +1,8 @@
 {
     "name": "scriptotek/primo-search",
     "description": "SDK for the Primo Search REST API",
+    "homepage": "http://github.com/scriptotek/php-primo-search",
+    "keywords": ["primo"],
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -29,5 +31,15 @@
         "guzzlehttp/psr7": "^1.0",
         "phpspec/phpspec": "^5.0",
         "squizlabs/php_codesniffer": "^3.3"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Scriptotek\\PrimoSearch\\Laravel\\ServiceProvider"
+            ],
+            "aliases": {
+                "Primo": "Scriptotek\\PrimoSearch\\Laravel\\Facade"
+            }
+        }
     }
 }
