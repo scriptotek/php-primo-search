@@ -17,9 +17,9 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'baseUrl' => env('PRIMO_BASE_URL'),  // <base-local-url>/primo_library/libweb/webservices/rest/v1/
+    'baseUrl'   => env('PRIMO_BASE_URL'),  // <base-local-url>/primo_library/libweb/webservices/rest/v1/
     'searchUrl' => env('PRIMO_SEARCh_URL'),  // Optional, if not located in the default location under {baseUrl}
-    'inst' => env('PRIMO_INST'),  // Institution ID
+    'inst'      => env('PRIMO_INST'),  // Institution ID
 
     /*
     |--------------------------------------------------------------------------
