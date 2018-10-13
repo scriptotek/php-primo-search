@@ -7,23 +7,24 @@ use InvalidArgumentException;
 class Query
 {
     protected $data = [
-        'q' => [],
-        'qInclude' => [],
-        'qExclude' => [],
+        'q'           => [],
+        'qInclude'    => [],
+        'qExclude'    => [],
         'multifacets' => [],
-        'sort' => 'rank',
-        'offset' => 0,
-        'limit' => 10,
+        'sort'        => 'rank',
+        'offset'      => 0,
+        'limit'       => 10,
     ];
 
     public static function new()
     {
-        return new static;
+        return new static();
     }
 
     public function where($field, $op, $value)
     {
         $this->data['q'][] = new QueryPart($field, $op, $value);
+
         return $this;
     }
 
@@ -34,6 +35,7 @@ class Query
         }
         $this->data['q'][count($this->data['q']) - 1]->setOperator('OR');
         $this->data['q'][] = new QueryPart($field, $op, $value);
+
         return $this;
     }
 
@@ -44,6 +46,7 @@ class Query
         }
         $this->data['q'][count($this->data['q']) - 1]->setOperator('NOT');
         $this->data['q'][] = new QueryPart($field, $op, $value);
+
         return $this;
     }
 
@@ -74,9 +77,9 @@ class Query
     /**
      * Filter results by including facet values.
      *
-     * @param string $category        The facet type
-     * @param string|array  $values   One or more facet values (string or array)
-     * @param string $conjuction      The logical conjuction (AND or OR) to use between the facet values.
+     * @param string       $category   The facet type
+     * @param string|array $values     One or more facet values (string or array)
+     * @param string       $conjuction The logical conjuction (AND or OR) to use between the facet values.
      */
     public function includeFacetValues($category, $values, $conjuction = 'OR')
     {
@@ -92,15 +95,16 @@ class Query
                 throw new InvalidArgumentException('Invalid operator: ' . $conjuction);
             }
         }
+
         return $this;
     }
 
     /**
      * Filter results by excluding facet values.
      *
-     * @param string $category        The facet type
-     * @param string|array  $values   One or more facet values (string or array)
-     * @param string $conjuction      The logical conjuction (AND or OR) to use between the facet values.
+     * @param string       $category   The facet type
+     * @param string|array $values     One or more facet values (string or array)
+     * @param string       $conjuction The logical conjuction (AND or OR) to use between the facet values.
      */
     public function excludeFacetValues($category, $values, $conjuction = 'OR')
     {
@@ -116,24 +120,28 @@ class Query
                 throw new InvalidArgumentException('Invalid operator: ' . $conjuction);
             }
         }
+
         return $this;
     }
 
     public function sort(string $value)
     {
         $this->data['sort'] = $value;
+
         return $this;
     }
 
     public function offset(int $value)
     {
         $this->data['offset'] = $value;
+
         return $this;
     }
 
     public function limit(int $value)
     {
         $this->data['limit'] = $value;
+
         return $this;
     }
 }

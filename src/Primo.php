@@ -8,9 +8,8 @@ use Http\Client\Common\Plugin\RetryPlugin;
 use Http\Client\Common\PluginClient;
 use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
-use Http\Message\MessageFactory;
 use Http\Discovery\MessageFactoryDiscovery;
-use Psr\Http\Message\RequestInterface;
+use Http\Message\MessageFactory;
 
 class Primo
 {
@@ -64,23 +63,28 @@ class Primo
         $this->http = new PluginClient($httpClient, $plugins);
         $this->messageFactory = $messageFactory ?: MessageFactoryDiscovery::find();
     }
+
     /**
      * Set the view ID.
+     *
      * @param $vid
      */
     public function setVid(string $vid)
     {
         $this->vid = $vid;
+
         return $this;
     }
 
     /**
      * Set the search scope.
+     *
      * @param $scope
      */
     public function setScope(string $scope)
     {
         $this->scope = $scope;
+
         return $this;
     }
 
@@ -88,8 +92,8 @@ class Primo
     {
         $res = $this->request($this->baseUrl . "guestJwt/{$this->inst}", [
             'isGuest' => 'true',
-            'viewId' => $this->vid,
-            'lang' => $this->lang,
+            'viewId'  => $this->vid,
+            'lang'    => $this->lang,
         ]);
 
         $this->jwtToken = trim($res, '"');
@@ -99,9 +103,12 @@ class Primo
 
     /**
      * Make an API request.
+     *
      * @param Query|array $query
-     * @return string
+     *
      * @throws \Http\Client\Exception
+     *
+     * @return string
      */
     public function search($query)
     {
@@ -115,17 +122,17 @@ class Primo
 
         $params = array_merge(
             [
-                'vid' => $this->vid,
-                'scope' => $this->scope,
-                'inst' => $this->inst,
-                'lang' => $this->lang,
-                'pcAvailability' => 'false',
-                'mode' => 'advanced',
+                'vid'              => $this->vid,
+                'scope'            => $this->scope,
+                'inst'             => $this->inst,
+                'lang'             => $this->lang,
+                'pcAvailability'   => 'false',
+                'mode'             => 'advanced',
                 'newspapersActive' => 'false',
                 'newspapersSearch' => 'false',
-                'skipDelivery' => 'Y',
-                'tab' => 'default_tab',
-                'rtaLinks' => 'true',
+                'skipDelivery'     => 'Y',
+                'tab'              => 'default_tab',
+                'rtaLinks'         => 'true',
             ],
             $query
         );
@@ -141,9 +148,9 @@ class Primo
 
         $headers = [
             'Accept-Encoding' => 'gzip',
-            'Accept' => 'application/json',
-            'User-Agent' => $this->userAgent,
-            'Authorization' => isset($this->apiKey)
+            'Accept'          => 'application/json',
+            'User-Agent'      => $this->userAgent,
+            'Authorization'   => isset($this->apiKey)
                 ? "apikey {$this->apiKey}"
                 : "Bearer {$this->jwtToken}",
         ];
@@ -165,6 +172,7 @@ class Primo
         if (isset($this->jwtToken)) {
             return $this->jwtToken;
         }
+
         return $this->getGuestJwtToken();
     }
 }
