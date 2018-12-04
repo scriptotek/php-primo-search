@@ -186,4 +186,29 @@ class Primo
 
         return $this->getGuestJwtToken();
     }
+
+    /**
+     * Request the configuration for the current view and return the decoded JSON response.
+     *
+     * @return object
+     */
+    public function configuration()
+    {
+        $result = $this->request("{$this->baseUrl}/configuration/{$this->vid}");
+
+        return json_decode($result) ?? $result;
+    }
+
+    /**
+     * Request the translations for the current view and return the decoded JSON response.
+     *
+     * @param string $lang
+     * @return object
+     */
+    public function translations($lang)
+    {
+        $result = $this->request("{$this->baseUrl}/translations/{$this->vid}?lang={$lang}");
+
+        return json_decode($result) ?? $result;
+    }
 }
