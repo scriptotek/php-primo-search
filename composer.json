@@ -18,6 +18,7 @@
     },
     "require": {
         "php": ">=7.0",
+        "ext-json": "*",
         "psr/http-message": "^1.0",
         "php-http/client-implementation": "^1.0",
         "php-http/httplug": "^1.0",

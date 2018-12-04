@@ -46,13 +46,12 @@ class Primo
             // Hosted
             $this->apiKey = $config['apiKey'];
             $this->region = $config['region'] ?? 'eu';
-            $this->baseUrl = "https://api-{$this->region}.hosted.exlibrisgroup.com/primo/v1/";
+            $this->baseUrl = "https://api-{$this->region}.hosted.exlibrisgroup.com/primo/v1";
             $this->searchUrl = "{$this->baseUrl}/search";
         } else {
             // On-premises
             $this->inst = $config['inst'];
-            $baseUrl = rtrim($config['baseUrl'], '/') . '/';
-            $this->baseUrl = $baseUrl;
+            $this->baseUrl = rtrim($config['baseUrl'], '/');
             $this->searchUrl = $config['searchUrl'] ?? "{$this->baseUrl}/pnxs";
         }
 
@@ -90,11 +89,11 @@ class Primo
 
     protected function getGuestJwtToken()
     {
-        $res = $this->request($this->baseUrl . "guestJwt/{$this->inst}", [
+        $res = $this->request("{$this->baseUrl}/guestJwt/{$this->inst}?" . http_build_query([
             'isGuest' => 'true',
             'viewId'  => $this->vid,
             'lang'    => $this->lang,
-        ]);
+        ]));
 
         $this->jwtToken = trim($res, '"');
 
@@ -102,20 +101,13 @@ class Primo
     }
 
     /**
-     * Make an API request.
+     * Build and return the full URL for a search request.
      *
      * @param Query|array $query
-     *
-     * @throws \Http\Client\Exception
-     *
      * @return string
      */
-    public function search($query)
+    public function buildSearchUrl($query)
     {
-        if (!isset($this->apiKey) && !isset($this->jwtToken)) {
-            $this->getGuestJwtToken();
-        }
-
         if (is_object($query)) {
             $query = $query->build();
         }
@@ -137,15 +129,34 @@ class Primo
             $query
         );
 
-        $result = $this->request($this->searchUrl, $params);
+        return $this->searchUrl . '?' . http_build_query($params);
+    }
+
+    /**
+     * Make a search request and return the decoded JSON response.
+     *
+     * @param Query|array $query
+     * @return object
+     */
+    public function search($query)
+    {
+        if (!isset($this->apiKey) && !isset($this->jwtToken)) {
+            $this->getGuestJwtToken();
+        }
+
+        $result = $this->request($this->buildSearchUrl($query));
 
         return json_decode($result) ?? $result;
     }
 
-    public function request($url, $params)
+    /**
+     * Make an API request and return the text response.
+     *
+     * @param string $url
+     * @return string
+     */
+    protected function request($url)
     {
-        $url .= '?' . http_build_query($params);
-
         $headers = [
             'Accept-Encoding' => 'gzip',
             'Accept'          => 'application/json',
