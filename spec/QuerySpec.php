@@ -2,6 +2,7 @@
 
 namespace spec\Scriptotek\PrimoSearch;
 
+use Scriptotek\PrimoSearch\InvalidQueryException;
 use Scriptotek\PrimoSearch\Query;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -15,17 +16,17 @@ class QuerySpec extends ObjectBehavior
 
     function it_cannot_be_empty()
     {
-        $this->shouldThrow('\Error')->duringBuild();
+        $this->shouldThrow(InvalidQueryException::class)->duringBuild();
     }
 
     function it_cannot_start_with_or()
     {
-        $this->shouldThrow('\Error')->duringOrWhere('field1', '=', 'value1');
+        $this->shouldThrow(InvalidQueryException::class)->duringOrWhere('field1', '=', 'value1');
     }
 
     function it_cannot_start_with_not()
     {
-        $this->shouldThrow('\Error')->duringNot('field1', '=', 'value1');
+        $this->shouldThrow(InvalidQueryException::class)->duringNot('field1', '=', 'value1');
     }
 
     function it_supports_chaining()

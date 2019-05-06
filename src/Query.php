@@ -2,8 +2,6 @@
 
 namespace Scriptotek\PrimoSearch;
 
-use InvalidArgumentException;
-
 class Query
 {
     protected $data = [
@@ -31,7 +29,7 @@ class Query
     public function orWhere($field, $op, $value)
     {
         if (!count($this->data['q'])) {
-            throw new \Error('Cannot start query with OR');
+            throw new InvalidQueryException('Query cannot start with OR');
         }
         $this->data['q'][count($this->data['q']) - 1]->setOperator('OR');
         $this->data['q'][] = new QueryPart($field, $op, $value);
@@ -42,7 +40,7 @@ class Query
     public function not($field, $op, $value)
     {
         if (!count($this->data['q'])) {
-            throw new \Error('Cannot start query with NOT');
+            throw new InvalidQueryException('Query cannot start with NOT');
         }
         $this->data['q'][count($this->data['q']) - 1]->setOperator('NOT');
         $this->data['q'][] = new QueryPart($field, $op, $value);
@@ -53,7 +51,7 @@ class Query
     public function build()
     {
         if (!count($this->data['q'])) {
-            throw new \Error('Query is empty');
+            throw new InvalidQueryException('Query is empty');
         }
 
         $params = [];
@@ -92,7 +90,7 @@ class Query
             } elseif ($conjuction == 'AND') {
                 $this->data['qInclude'][] = [$category, 'exact', $value];
             } else {
-                throw new InvalidArgumentException('Invalid operator: ' . $conjuction);
+                throw new InvalidQueryException('Invalid operator: ' . $conjuction);
             }
         }
 
@@ -117,7 +115,7 @@ class Query
             } elseif ($conjuction == 'AND') {
                 $this->data['qExclude'][] = [$category, 'exact', $value];
             } else {
-                throw new InvalidArgumentException('Invalid operator: ' . $conjuction);
+                throw new InvalidQueryException('Invalid operator: ' . $conjuction);
             }
         }
 
