@@ -6,16 +6,16 @@ use Http\Client\Common\Plugin\DecoderPlugin;
 use Http\Client\Common\Plugin\ErrorPlugin;
 use Http\Client\Common\Plugin\RetryPlugin;
 use Http\Client\Common\PluginClient;
-use Http\Client\HttpClient;
-use Http\Discovery\HttpClientDiscovery;
-use Http\Discovery\MessageFactoryDiscovery;
-use Http\Message\MessageFactory;
+use Http\Factory\Discovery\HttpClient;
+use Http\Factory\Discovery\HttpFactory;
+use Psr\Http\Client\ClientInterface as HttpClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 class Primo
 {
     // Services
     protected $http;
-    protected $messageFactory;
+    protected $requestFactory;
 
     // For hosted setup
     protected $apiKey;
@@ -35,9 +35,9 @@ class Primo
 
     public function __construct(
         array $config,
-        HttpClient $httpClient = null,
+        HttpClientInterface $httpClient = null,
         array $plugins = [],
-        MessageFactory $messageFactory = null
+        RequestFactoryInterface $requestFactory = null
     ) {
         $this->vid = $config['vid'];
         $this->scope = $config['scope'];
@@ -55,12 +55,12 @@ class Primo
             $this->searchUrl = $config['searchUrl'] ?? "{$this->baseUrl}/pnxs";
         }
 
-        $httpClient = $httpClient ?: HttpClientDiscovery::find();
+        $httpClient = $httpClient ?: HttpClient::client();
         $plugins[] = new RetryPlugin();
         $plugins[] = new ErrorPlugin();
         $plugins[] = new DecoderPlugin();
         $this->http = new PluginClient($httpClient, $plugins);
-        $this->messageFactory = $messageFactory ?: MessageFactoryDiscovery::find();
+        $this->requestFactory = $requestFactory ?: HttpFactory::requestFactory();
     }
 
     /**
@@ -157,16 +157,11 @@ class Primo
      */
     protected function request($url)
     {
-        $headers = [
-            'Accept-Encoding' => 'gzip',
-            'Accept'          => 'application/json',
-            'User-Agent'      => $this->userAgent,
-            'Authorization'   => isset($this->apiKey)
-                ? "apikey {$this->apiKey}"
-                : "Bearer {$this->jwtToken}",
-        ];
-
-        $request = $this->messageFactory->createRequest('GET', $url, $headers);
+        $request = $this->requestFactory->createRequest('GET', $url)
+            ->withHeader('Accept-Encoding', 'gzip')
+            ->withHeader('Accept', 'application/json')
+            ->withHeader('User-Agent', $this->userAgent)
+            ->withHeader('Authorization', isset($this->apiKey) ? "apikey {$this->apiKey}" : "Bearer {$this->jwtToken}");
 
         $response = $this->http->sendRequest($request);
 
